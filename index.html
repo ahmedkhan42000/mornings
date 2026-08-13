@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mornings</title>
+<meta name="theme-color" content="#0a0e14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mornings">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0e14;
+    --glass:rgba(255,255,255,0.045);
+    --glass-strong:rgba(255,255,255,0.07);
+    --hair:rgba(255,255,255,0.09);
+    --text:#f0ece3;
+    --text-dim:#8d9aa3;
+    --sage:#8fd0a0;
+    --sage-dim:#3f5c48;
+    --clay:#e0906d;
+    --clay-dim:#7a5140;
+    --gold:#ecc97e;
+    --violet:#8a86d8;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* Ambient background */
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;}
+  .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.35;}
+  .blob1{width:280px;height:280px;background:radial-gradient(circle,var(--violet),transparent 70%);top:-80px;left:-60px;animation:drift1 22s ease-in-out infinite;}
+  .blob2{width:320px;height:320px;background:radial-gradient(circle,var(--sage),transparent 70%);bottom:-100px;right:-80px;animation:drift2 26s ease-in-out infinite;}
+  .blob3{width:200px;height:200px;background:radial-gradient(circle,var(--gold),transparent 70%);top:40%;left:60%;opacity:0.18;animation:drift1 30s ease-in-out infinite reverse;}
+  @keyframes drift1{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,40px);}}
+  @keyframes drift2{0%,100%{transform:translate(0,0);}50%{transform:translate(-30px,-30px);}}
+  .stars{position:absolute;inset:0;
+    background-image:
+      radial-gradient(1.3px 1.3px at 15% 20%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 40% 65%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1.5px 1.5px at 70% 30%, rgba(255,255,255,0.45), transparent),
+      radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1.2px 1.2px at 25% 85%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 55% 10%, rgba(255,255,255,0.3), transparent);
+    animation:twinkle 5s ease-in-out infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:0.7;}50%{opacity:1;}}
+
+  .app{position:relative;z-index:1;width:100%;max-width:480px;margin:0 auto;
+    padding:calc(26px + env(safe-area-inset-top)) 16px calc(60px + env(safe-area-inset-bottom));}
+
+  .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;
+    animation:fadeUp .5s ease both;}
+  .top .brand{font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+  .top .date{font-size:12px;color:var(--text-dim);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--hair);
+    border-radius:24px;
+  }
+
+  /* Hero */
+  .hero{
+    padding:30px 24px 22px;
+    text-align:center;
+    position:relative;
+    animation:fadeUp .5s ease .05s both;
+  }
+
+  .ring-wrap{position:relative;width:190px;height:190px;margin:0 auto 6px;}
+  .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring-track{fill:none;stroke:var(--hair);stroke-width:6;}
+  .ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:6;stroke-linecap:round;
+    transition:stroke-dashoffset 1.1s cubic-bezier(.16,.8,.3,1);}
+  .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .day-label{font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage);margin-bottom:2px;font-weight:600;}
+  .day-number{font-family:'Fraunces',serif;font-weight:400;font-size:64px;line-height:1;color:var(--text);}
+  .day-suffix{font-size:11.5px;color:var(--text-dim);margin-top:2px;}
+
+  .milestone-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    background:rgba(236,201,126,0.12);border:1px solid rgba(236,201,126,0.35);
+    color:var(--gold);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;
+    margin-top:10px;
+  }
+
+  .msg{
+    margin-top:14px;
+    font-size:14.5px;
+    color:var(--text-dim);
+    line-height:1.55;
+    font-style:italic;
+    font-family:'Fraunces',serif;
+    padding:0 6px;
+  }
+
+  /* Constellation strip */
+  .path-label{font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin:22px 0 8px;text-align:left;}
+  .sky-wrap{
+    height:74px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    border-radius:14px;background:rgba(255,255,255,0.02);
+  }
+  .sky-wrap::-webkit-scrollbar{display:none;}
+  .sky{height:74px;}
+  .star{filter:drop-shadow(0 0 4px rgba(143,208,160,0.7));}
+  .star.milestone{filter:drop-shadow(0 0 8px rgba(236,201,126,0.9));}
+
+  /* Check-in row */
+  .checkin{margin-top:20px;display:flex;gap:10px;}
+  button{
+    font-family:'Inter',sans-serif;border:none;border-radius:16px;padding:15px;
+    font-size:14px;font-weight:600;cursor:pointer;
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), opacity .15s ease, box-shadow .2s ease, background .2s ease;
+    flex:1;position:relative;
+  }
+  button:active{transform:scale(0.95);}
+  button:disabled{cursor:default;}
+  .btn-good{
+    background:linear-gradient(135deg, var(--sage), #6fb182);
+    color:#0c1710;
+    box-shadow:0 4px 18px rgba(143,208,160,0.28);
+  }
+  .btn-good:disabled{
+    background:transparent;border:1px solid var(--sage-dim);color:var(--sage);
+    box-shadow:none;opacity:0.9;
+  }
+  .btn-slip{
+    background:var(--glass-strong);
+    border:1px solid rgba(224,144,109,0.35);
+    color:var(--clay);
+  }
+  .btn-slip:hover{background:rgba(224,144,109,0.1);}
+
+  /* Stats row */
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px;
+    animation:fadeUp .5s ease .1s both;}
+  .stat{padding:16px 8px;text-align:center;}
+  .stat .n{font-family:'Fraunces',serif;font-size:24px;color:var(--text);}
+  .stat .l{font-size:9.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.09em;margin-top:3px;}
+
+  /* Heatmap */
+  .section-title{
+    font-size:12px;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-dim);
+    margin:26px 0 12px;font-weight:600;
+  }
+  .heatmap-card{padding:18px 16px;animation:fadeUp .5s ease .15s both;}
+  .heat-grid{display:grid;grid-template-columns:repeat(7, 1fr);gap:5px;}
+  .heat-dow{font-size:9px;color:var(--text-dim);text-align:center;text-transform:uppercase;}
+  .heat-cell{aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,0.05);transition:transform .12s ease;}
+  .heat-cell.good{background:linear-gradient(135deg,var(--sage),#5b9268);}
+  .heat-cell.slip{background:linear-gradient(135deg,var(--clay),#a15f43);}
+  .heat-cell.future{background:transparent;border:1px dashed var(--hair);}
+  .heat-cell.today{box-shadow:0 0 0 2px var(--gold) inset;}
+  .heat-legend{display:flex;gap:14px;margin-top:14px;font-size:11px;color:var(--text-dim);align-items:center;flex-wrap:wrap;}
+  .legend-dot{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:middle;}
+
+  /* History */
+  .history{display:flex;flex-direction:column;gap:8px;animation:fadeUp .5s ease .2s both;}
+  .hist-item{padding:13px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+  .hist-item .gap{color:var(--sage);font-weight:600;}
+  .hist-item .when{color:var(--text-dim);}
+  .empty{color:var(--text-dim);font-size:13.5px;padding:12px 16px;}
+
+  .save-note{font-size:11px;color:var(--clay);text-align:center;margin-top:12px;display:none;}
+  .save-note.show{display:block;}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(5,7,10,0.75);backdrop-filter:blur(4px);
+    display:none;align-items:flex-end;justify-content:center;z-index:10;}
+  .overlay.show{display:flex;}
+  .modal{
+    background:rgba(20,25,32,0.92);backdrop-filter:blur(20px);
+    border:1px solid var(--hair);border-radius:24px 24px 0 0;
+    width:100%;max-width:480px;padding:28px 24px 32px;
+    animation:slideUp .3s cubic-bezier(.16,.8,.3,1);
+  }
+  @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+  .modal h3{font-family:'Fraunces',serif;font-weight:400;font-size:23px;margin:0 0 8px;}
+  .modal p{color:var(--text-dim);font-size:13.5px;line-height:1.5;margin:0 0 16px;}
+  textarea{
+    width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--hair);border-radius:14px;
+    color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:13px;
+    resize:none;min-height:70px;margin-bottom:14px;
+  }
+  textarea:focus{outline:none;border-color:var(--sage-dim);}
+  .modal-actions{display:flex;gap:10px;}
+  .btn-confirm{background:linear-gradient(135deg,var(--clay),#b8663f);color:#1a0f08;}
+  .btn-cancel{background:transparent;border:1px solid var(--hair);color:var(--text-dim);}
+
+  /* Toast */
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:rgba(20,25,32,0.95);backdrop-filter:blur(12px);
+    border:1px solid var(--sage-dim);color:var(--sage);
+    padding:13px 22px;border-radius:14px;font-size:13.5px;opacity:0;
+    transition:opacity .25s ease, transform .25s ease;pointer-events:none;z-index:20;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .loading{text-align:center;color:var(--text-dim);padding:60px 0;font-size:13px;position:relative;z-index:1;}
+
+  @media (prefers-reduced-motion: reduce){
+    .blob,.stars,button,.ring-fill{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div><div class="stars"></div></div>
+
+<div class="app" id="app">
+  <div class="loading" id="loading">loading…</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3>Logging today</h3>
+    <p>That's okay. This resets the constellation, not the progress you've already made. A short note can help you notice the pattern next time — totally optional.</p>
+    <textarea id="noteInput" placeholder="What was going on right before? (optional)"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
+      <button class="btn-confirm" id="confirmBtn">Log it &amp; reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+window.addEventListener('error', function(e){
+  var app = document.getElementById('app');
+  if(app){
+    app.innerHTML = '<div class="loading" style="color:#e0906d;text-align:left;padding:20px;">'
+      + 'Something went wrong loading the app:<br><br><code style="font-size:11px;word-break:break-all;">'
+      + (e.message || 'Unknown error') + '</code></div>';
+  }
+});
+const KEY = 'streak-data';
+let data = null;
+
+const MILESTONES = [1,3,7,14,21,30,45,60,90,120,180,365];
+
+const MESSAGES = {
+  0: "Today is the whole game. Just get through today.",
+  1: "One day down. The first is always the hardest — you did it.",
+  2: "Two days. The urge is loudest right at the start. You're past the loudest part.",
+  3: "Three days. This is usually where cravings peak, then start easing.",
+  7: "One week. Your brain is already recalibrating its baseline.",
+  14: "Two weeks. This is no longer a fluke — it's becoming a pattern.",
+  21: "Three weeks. Habits are forming new grooves now.",
+  30: "One month. Genuinely significant. Notice how different you feel.",
+  60: "Two months. You've built real evidence that you can do this.",
+  90: "Ninety days. Most people never get here. You did.",
+  180: "Six months. This is who you are now, not just what you're avoiding.",
+  365: "One year. Extraordinary. Truly."
+};
+
+const AFFIRMATIONS = [
+  "Logged. Another clean star in the sky.",
+  "Noted — that's today handled.",
+  "Good. Same time tomorrow.",
+  "That's a day you can be proud of.",
+  "Recorded. Keep the chain going."
+];
+
+function defaultMsg(n){
+  if(MESSAGES[n]) return MESSAGES[n];
+  if(n<7) return "Keep going — every hour without acting on it is rewiring the habit.";
+  if(n<30) return "Steady progress. Don't chase perfection, just keep showing up.";
+  if(n<90) return "This is becoming who you are, not just a rule you're following.";
+  return "Look how far you've come. Keep protecting this.";
+}
+
+function dateKey(d){ return d.toISOString().slice(0,10); }
+function todayKey(){ return dateKey(new Date()); }
+function daysBetweenKeys(k1,k2){
+  const a = new Date(k1+'T00:00:00Z');
+  const b = new Date(k2+'T00:00:00Z');
+  return Math.round((b-a)/86400000);
+}
+
+function load(){
+  data = null;
+  try{
+    const raw = localStorage.getItem(KEY);
+    data = raw ? JSON.parse(raw) : null;
+  }catch(e){
+    console.error('load failed', e);
+  }
+  if(!data){
+    const today = todayKey();
+    data = { firstStart: today, streakStart: today, longestStreak: 0, relapses: [], checkIns: {} };
+    save();
+  }
+  if(!data.firstStart) data.firstStart = data.streakStart;
+  if(!data.checkIns) data.checkIns = {};
+  render();
+}
+
+function save(){
+  const note = document.getElementById('saveNote');
+  try{
+    localStorage.setItem(KEY, JSON.stringify(data));
+    if(note) note.classList.remove('show');
+    return true;
+  }catch(e){
+    console.error('save failed', e);
+    if(note) note.classList.add('show');
+    return false;
+  }
+}
+
+function currentStreakDays(){ return daysBetweenKeys(data.streakStart, todayKey()); }
+
+function fmtDate(key){
+  return new Date(key+'T00:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric', timeZone:'UTC'});
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function starPos(i){
+  const seed = i*9301 + 49297;
+  const rnd = (seed % 233280) / 233280;
+  const seed2 = i*4139 + 12347;
+  const rnd2 = (seed2 % 104729) / 104729;
+  const x = 20 + i*38 + rnd*12;
+  const y = 14 + rnd2*46;
+  return {x,y};
+}
+
+function renderConstellation(n){
+  const count = n+1;
+  const width = Math.max(280, 20 + count*38 + 24);
+  let stars = '', lines = '', prev = null;
+  for(let i=0;i<count;i++){
+    const p = starPos(i);
+    const isMilestone = MILESTONES.includes(i);
+    if(prev){
+      lines += `<line x1="${prev.x}" y1="${prev.y}" x2="${p.x}" y2="${p.y}" stroke="#5b9268" stroke-width="1" opacity="0.5"/>`;
+    }
+    stars += `<circle class="star${isMilestone?' milestone':''}" cx="${p.x}" cy="${p.y}" r="${isMilestone?4:2.6}" fill="${isMilestone?'#ecc97e':'#8fd0a0'}"/>`;
+    prev = p;
+  }
+  return {svg:`<svg width="${width}" height="74" viewBox="0 0 ${width} 74">${lines}${stars}</svg>`, width};
+}
+
+function buildHeatmap(){
+  const first = data.firstStart;
+  const today = todayKey();
+  const totalDays = daysBetweenKeys(first, today);
+  const relapseSet = {};
+  data.relapses.forEach(r => relapseSet[r.date] = true);
+
+  const firstDate = new Date(first+'T00:00:00Z');
+  let startPad = (firstDate.getUTCDay()+6)%7;
+  const cells = [];
+  for(let i=0;i<startPad;i++) cells.push({type:'pad'});
+  for(let i=0;i<=totalDays;i++){
+    const d = new Date(firstDate.getTime()+i*86400000);
+    const k = dateKey(d);
+    if(k === today){
+      cells.push({type: relapseSet[k] ? 'slip' : 'good', today:true});
+    } else if(relapseSet[k]){
+      cells.push({type:'slip'});
+    } else {
+      cells.push({type:'good'});
+    }
+  }
+  while(cells.length % 7 !== 0) cells.push({type:'future'});
+  return cells;
+}
+
+function nextMilestone(n){
+  for(const m of MILESTONES){ if(m > n) return m; }
+  return MILESTONES[MILESTONES.length-1] + Math.ceil((n - MILESTONES[MILESTONES.length-1])/30)*30;
+}
+function prevMilestone(n){
+  let p = 0;
+  for(const m of MILESTONES){ if(m <= n) p = m; else break; }
+  return p;
+}
+
+function render(){
+  const n = currentStreakDays();
+  const longest = Math.max(data.longestStreak, n);
+  const totalResets = data.relapses.length;
+  const checkedToday = !!data.checkIns[todayKey()];
+  const {svg, width} = renderConstellation(n);
+
+  const nm = nextMilestone(n);
+  const pm = prevMilestone(n);
+  const progress = nm===pm ? 1 : (n-pm)/(nm-pm);
+  const r = 84, circ = 2*Math.PI*r;
+  const dashoffset = circ*(1-Math.min(progress,1));
+  const isMilestoneToday = MILESTONES.includes(n);
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="top">
+      <div class="brand">Mornings</div>
+      <div class="date">${new Date().toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'})}</div>
+    </div>
+
+    <div class="glass hero">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 190 190">
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8fd0a0"/>
+              <stop offset="100%" stop-color="#ecc97e"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-track" cx="95" cy="95" r="${r}"/>
+          <circle class="ring-fill" cx="95" cy="95" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${dashoffset}"/>
+        </svg>
+        <div class="ring-center">
+          <div class="day-label">Streak</div>
+          <div class="day-number">${n}</div>
+          <div class="day-suffix">${n===1 ? 'day' : 'days'}</div>
+        </div>
+      </div>
+
+      ${isMilestoneToday ? `<div class="milestone-badge">✦ Milestone reached</div>` : ''}
+      <div class="msg">${defaultMsg(n)}</div>
+
+      <div class="path-label">Your path · since ${fmtDate(data.streakStart)}</div>
+      <div class="sky-wrap" id="skyWrap"><div class="sky" style="width:${width}px">${svg}</div></div>
+
+      <div class="checkin">
+        <button class="btn-good" id="goodBtn" ${checkedToday ? 'disabled' : ''}>${checkedToday ? 'Checked in ✓' : "Didn't slip today"}</button>
+        <button class="btn-slip" id="slipBtn">I slipped</button>
+      </div>
+      <div class="save-note" id="saveNote">Having trouble saving — try tapping the button again in a moment.</div>
+    </div>
+
+    <div class="stats">
+      <div class="glass stat"><div class="n">${longest}</div><div class="l">Longest</div></div>
+      <div class="glass stat"><div class="n">${totalResets}</div><div class="l">Logged</div></div>
+      <div class="glass stat"><div class="n">${nm}</div><div class="l">Next goal</div></div>
+    </div>
+
+    <div class="section-title">Your record</div>
+    <div class="glass heatmap-card">
+      <div class="heat-grid" id="heatGrid"></div>
+      <div class="heat-legend">
+        <span><span class="legend-dot" style="background:linear-gradient(135deg,#8fd0a0,#5b9268)"></span>clean</span>
+        <span><span class="legend-dot" style="background:linear-gradient(135deg,#e0906d,#a15f43)"></span>logged</span>
+        <span><span class="legend-dot" style="background:transparent;border:1px dashed var(--hair)"></span>future</span>
+      </div>
+    </div>
+
+    <div class="section-title">History</div>
+    <div class="history" id="history"></div>
+  `;
+
+  const dows = ['M','T','W','T','F','S','S'];
+  const grid = document.getElementById('heatGrid');
+  const dowHtml = dows.map(d=>`<div class="heat-dow">${d}</div>`).join('');
+  const cells = buildHeatmap();
+  const cellsHtml = cells.map(c=>{
+    if(c.type==='pad') return `<div></div>`;
+    let cls = 'heat-cell '+c.type;
+    if(c.today) cls += ' today';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+  grid.innerHTML = dowHtml + cellsHtml;
+
+  const hist = document.getElementById('history');
+  if(data.relapses.length === 0){
+    hist.innerHTML = `<div class="glass empty">Nothing logged yet — this stays empty as long as you want it to.</div>`;
+  } else {
+    const rows = [...data.relapses].reverse().map(r => `
+      <div class="glass hist-item">
+        <span class="when">${fmtDate(r.date)}</span>
+        <span class="gap">${r.streakLength} day${r.streakLength===1?'':'s'} before</span>
+      </div>
+    `).join('');
+    hist.innerHTML = rows;
+  }
+
+  document.getElementById('slipBtn').addEventListener('click', openModal);
+  const goodBtn = document.getElementById('goodBtn');
+  if(!checkedToday){ goodBtn.addEventListener('click', markGood); }
+
+  const skyWrap = document.getElementById('skyWrap');
+  skyWrap.scrollLeft = skyWrap.scrollWidth;
+}
+
+function markGood(){
+  data.checkIns[todayKey()] = true;
+  save();
+  showToast(AFFIRMATIONS[Math.floor(Math.random()*AFFIRMATIONS.length)]);
+  render();
+}
+
+function openModal(){
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('noteInput').value = '';
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id === 'overlay') closeModal(); });
+document.getElementById('confirmBtn').addEventListener('click', ()=>{
+  const n = currentStreakDays();
+  const today = todayKey();
+  data.longestStreak = Math.max(data.longestStreak, n);
+  data.relapses.push({ date: today, streakLength: n, note: document.getElementById('noteInput').value.trim() });
+  delete data.checkIns[today];
+  data.streakStart = today;
+  save();
+  closeModal();
+  render();
+});
+
+try{
+  load();
+}catch(e){
+  console.error(e);
+  window.dispatchEvent(new ErrorEvent('error', {message: e.message}));
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(err=>console.error('SW registration failed', err));
+  });
+}
+</script>
+</body>
+</html>
